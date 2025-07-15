@@ -53,6 +53,11 @@ INSTALLED_APPS = [
     'corsheaders',
 ]
 
+MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Debe estar al inicio
+    ...
+]
+
 # agregar apps para Auth - paso 2
 AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
@@ -168,3 +173,10 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.SessionAuthentication', # Mantener para el navegador y el panel admin
     ],
 }
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:8080",
+    "http://127.0.0.1:8080",
+]
+
+CORS_ALLOW_ALL_ORIGINS = True

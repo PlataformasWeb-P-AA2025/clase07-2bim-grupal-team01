@@ -18,12 +18,19 @@
           {{ estudiante.nombre }} {{ estudiante.apellido }} (Cédula:
           {{ estudiante.cedula }})
         </router-link>
+
+        <button
+          class="delete-button"
+          @click="eliminarEstudiante(estudiante.url)"
+        >
+          Eliminar
+        </button>
       </li>
     </ul>
     <p v-else>No hay estudiantes registrados.</p>
-    <router-link to="/estudiantes/nuevo" class="add-button"
-      >Agregar Nuevo Estudiante</router-link
-    >
+    <router-link to="/estudiantes/nuevo" class="add-button">
+      Agregar Nuevo Estudiante
+    </router-link>
   </div>
 </template>
 
@@ -49,7 +56,6 @@ export default {
         this.error = null;
         const response = await api.get("estudiantes/");
         this.estudiantes = response.data.results || response.data;
-        console.log("Estudiantes cargados:", this.estudiantes);
       } catch (err) {
         console.error("Error al cargar estudiantes:", err.response || err);
         this.error =
@@ -58,7 +64,20 @@ export default {
         this.loading = false;
       }
     },
-    // Ya no necesitamos getEstudianteId() si pasamos la URL completa
+    async eliminarEstudiante(estudianteUrl) {
+      const confirmar = confirm(
+        "¿Estás seguro de que deseas eliminar este estudiante?"
+      );
+      if (!confirmar) return;
+
+      try {
+        await api.delete(estudianteUrl);
+        this.fetchEstudiantes();
+      } catch (err) {
+        console.error("Error al eliminar estudiante:", err.response || err);
+        this.error = "No se pudo eliminar el estudiante. Intenta nuevamente.";
+      }
+    },
   },
 };
 </script>
@@ -125,5 +144,21 @@ ul {
   color: red;
   text-align: center;
   margin-top: 10px;
+}
+
+.delete-button {
+  margin-left: 15px;
+  padding: 5px 10px;
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.9em;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.delete-button:hover {
+  background-color: #c82333;
 }
 </style>
